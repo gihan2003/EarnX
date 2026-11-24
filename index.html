@@ -47,10 +47,34 @@ main{padding:16px}.page{display:none}.page.active{display:block}
   <div class="hero"><div class="crown">👑</div><div class="logo">TaskX<span>Points</span></div><div class="tagline">Earn · Complete Tasks · Withdraw</div></div>
   <div class="balance"><div class="small">Your Balance</div><div class="balance-line"><div class="coin">🪙</div><div class="amount" id="balance">12,750 <small>Points</small></div></div><div class="usd" id="usdBalance">≈ $1.27</div></div>
   <div class="tap-area"><button class="tap-coin" id="tapBtn" aria-label="Tap to earn">★</button><div class="tap-title">Tap to Earn</div><div class="energy"><div class="energy-fill" id="energyFill"></div></div><div class="energy-label"><span id="energyText">100 / 100</span> Energy</div><div class="reward">+10 Points per Tap</div></div>
-  <div class="action" onclick="showToast('Tasks will be loaded from your bot server.')"><div class="action-icon">📋</div><div class="action-copy"><div class="action-title">Complete Tasks</div><div class="action-desc">Earn more points</div></div><div class="chev">›</div></div>
-  <div class="action" onclick="showToast('Daily bonus needs server-side claim validation.')"><div class="action-icon">🎁</div><div class="action-copy"><div class="action-title">Daily Bonus</div><div class="action-desc">Claim your daily reward</div></div><div class="chev">›</div></div>
-  <div class="action" onclick="showToast('Ad rewards need an approved ad provider and server validation.')"><div class="action-icon">▶️</div><div class="action-copy"><div class="action-title">Watch Ads</div><div class="action-desc">Earn points by watching ads</div></div><div class="chev">›</div></div>
 </section>
+
+<section class="page" id="task">
+  <div class="section-title">📌 Tasks Center</div>
+  <div class="section-sub">Complete daily activities and earn more points.</div>
+  <div class="balance" style="border-color:#8b5cf6;background:linear-gradient(120deg,#251653,#14264b)">
+    <div class="small">Your task rewards</div>
+    <div style="font-size:22px;font-weight:900;margin-top:7px">Earn More Points <span style="float:right">🎯</span></div>
+    <div class="small" style="margin-top:5px">Choose a section below to get started.</div>
+  </div>
+  <div style="border:1px solid #d69b2d;background:linear-gradient(145deg,#33230b,#1b1b2e);border-radius:17px;padding:14px;margin:13px 0">
+    <div style="display:flex;align-items:center;gap:10px"><div style="font-size:30px">🎁</div><div style="flex:1"><div style="font-weight:900;font-size:17px">Daily Tasks</div><div class="small">Daily bonus and daily reward</div></div><span class="points">+1,000 Pts</span></div>
+    <div class="small" style="margin:12px 0">Claim your daily bonus once per day.</div>
+    <button class="primary-btn" style="background:linear-gradient(100deg,#d18b16,#ffca43);color:#291900;margin:0" onclick="openFeature('daily')">Claim Daily Bonus</button>
+  </div>
+  <div style="border:1px solid #2589ff;background:linear-gradient(145deg,#102c58,#111b35);border-radius:17px;padding:14px;margin:13px 0">
+    <div style="display:flex;align-items:center;gap:10px"><div style="font-size:30px">📋</div><div style="flex:1"><div style="font-weight:900;font-size:17px">Complete Tasks</div><div class="small">Join channels and complete activities</div></div></div>
+    <div class="small" style="margin:12px 0">Open available tasks and follow the instructions to earn points.</div>
+    <button class="primary-btn" style="background:linear-gradient(100deg,#167cff,#5146e5);margin:0" onclick="openFeature('tasks')">View Complete Tasks</button>
+  </div>
+  <div style="border:1px solid #0aa875;background:linear-gradient(145deg,#073a35,#111b35);border-radius:17px;padding:14px;margin:13px 0">
+    <div style="display:flex;align-items:center;gap:10px"><div style="font-size:30px">▶️</div><div style="flex:1"><div style="font-weight:900;font-size:17px">Watch Ads</div><div class="small">Visit sponsored advertisements</div></div></div>
+    <div class="small" style="margin:12px 0">Open the sponsored advertisement using the button below.</div>
+    <button class="primary-btn" style="background:linear-gradient(100deg,#00a96b,#00d98b);margin:0" onclick="openFeature('ads')">Watch Advertisement</button>
+  </div>
+  <div class="note">Rewards shown here are demo rewards. For a live bot, verify daily claims, task completion and ad views on your backend before crediting points.</div>
+</section>
+
 <section class="page" id="top">
   <div class="trophy">🏆</div><div class="leader-banner">Top Members</div><div class="section-sub" style="text-align:center">Top 25 Earners · Demo leaderboard</div>
   <div class="leaderboard"><div class="leader-head"><span>#</span><span>Member / User ID</span><span>Points</span></div><div id="leaderRows"></div></div>
@@ -65,6 +89,11 @@ main{padding:16px}.page{display:none}.page.active{display:block}
 <section class="page" id="withdraw">
   <div class="ref-hero"><div class="ref-icon">👛</div><h2>Withdraw Points</h2><p>Convert your points to rewards</p></div>
   <div class="balance"><div class="small">Your Balance</div><div class="balance-line"><div class="coin">🪙</div><div class="amount" id="withdrawBalance">12,750 <small>Points</small></div></div><div class="usd" id="withdrawUsd">≈ $1.27</div></div>
+  <div class="ref-box" style="border-color:#a855f7;background:#21113d">
+    <div class="ref-label" style="color:#dec5ff">Minimum Withdrawal Limit</div>
+    <div style="font-size:24px;font-weight:900;margin-top:6px;color:#fff">$10.00 USD</div>
+    <div class="small" style="margin-top:5px">You must have at least 100,000 Points to request a withdrawal (10,000 Points = $1 demo rate).</div>
+  </div>
   <div class="section-title" style="font-size:16px">Select Withdraw Method</div>
   <div id="methods">
     <div class="method" data-method="Binance USDT" onclick="selectMethod(this)"><div class="method-icon">🟡</div><div class="method-name">Binance (USDT)</div><div class="method-arrow">›</div></div>
@@ -74,16 +103,25 @@ main{padding:16px}.page{display:none}.page.active{display:block}
     <div class="method" data-method="Bank Transfer" onclick="selectMethod(this)"><div class="method-icon">🏦</div><div class="method-name">Bank Transfer</div><div class="method-arrow">›</div></div>
   </div>
   <button class="primary-btn withdraw-btn" onclick="openWithdraw()">➤ &nbsp; Withdraw Now</button>
-  <div class="note">Demo UI only. Real withdrawals, minimum limits, exchange rates and payment verification must be implemented securely on your bot backend.</div>
+  <div class="note">Minimum withdrawal: $10.00 USD (100,000 Points at the displayed demo rate). Real exchange rates, eligibility and payment verification must be confirmed securely by your bot backend.</div>
 </section>
 </main>
-<nav class="bottom">
+<nav class="bottom" style="grid-template-columns:repeat(5,1fr)">
   <button class="nav active" data-page="earn" onclick="go('earn',this)"><span class="ico">⌂</span>Earn</button>
+  <button class="nav" data-page="task" onclick="go('task',this)"><span class="ico">📌</span>Task</button>
   <button class="nav" data-page="top" onclick="go('top',this)"><span class="ico">🏆</span>Top</button>
   <button class="nav" data-page="referral" onclick="go('referral',this)"><span class="ico">👥</span>Referral</button>
   <button class="nav" data-page="withdraw" onclick="go('withdraw',this)"><span class="ico">👛</span>Withdraw</button>
 </nav>
 <div class="toast" id="toast"></div>
+
+<div class="modal-bg" id="featureModal">
+  <div class="modal">
+    <h3 id="featureTitle">Earn more points</h3>
+    <div id="featureBody"></div>
+    <div class="modal-actions"><button class="primary-btn" style="background:#344363" onclick="closeFeature()">Close</button><button class="primary-btn" id="featureAction" onclick="runFeatureAction()">Continue</button></div>
+  </div>
+</div>
 <div class="modal-bg" id="withdrawModal">
   <div class="modal"><h3>Withdraw Request</h3><div class="small" id="selectedLabel">Method: not selected</div><label class="small" for="withdrawAmount">Points to withdraw</label><input id="withdrawAmount" type="number" min="1" placeholder="Enter points"><label class="small" for="paymentDetails">Payment account / details</label><input id="paymentDetails" placeholder="Enter your payment details"><div class="modal-actions"><button class="primary-btn" style="background:#344363" onclick="closeWithdraw()">Cancel</button><button class="primary-btn withdraw-btn" onclick="submitWithdraw()">Submit</button></div></div>
 </div>
@@ -91,6 +129,91 @@ main{padding:16px}.page{display:none}.page.active{display:block}
 <script>
 const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 if (tg) { tg.ready(); tg.expand(); }
+
+let activeFeature = "";
+let activeTaskIndex = -1;
+let adTimer = null;
+let adSeconds = 10;
+const taskList = [
+  {title:"Join our Telegram channel",desc:"Open the channel and join it.",reward:500,link:"https://t.me/TaskXPoints_bot"},
+  {title:"Share the bot with a friend",desc:"Share your personal referral link.",reward:300,link:""},
+  {title:"Visit our community",desc:"Open the community link.",reward:250,link:"https://t.me/TaskXPoints_bot"}
+];
+function openFeature(type){
+  activeFeature=type;
+  document.getElementById("featureAction").onclick=runFeatureAction;
+  const title=document.getElementById("featureTitle");
+  const body=document.getElementById("featureBody");
+  const action=document.getElementById("featureAction");
+  action.disabled=false; action.style.opacity="1";
+  if(type==="tasks"){
+    title.textContent="📋 Complete Tasks";
+    body.innerHTML=taskList.map((t,i)=>`<div class="action" style="margin:8px 0"><div class="action-copy"><div class="action-title">${t.title}</div><div class="action-desc">${t.desc} · +${format(t.reward)} Pts</div></div><button class="primary-btn" style="width:auto;margin:0;padding:9px 12px" onclick="startTask(${i})">Open</button></div>`).join("")+
+      '<div class="note">Demo tasks: real task completion must be checked by your bot backend before points are awarded.</div>';
+    action.textContent="Done";
+    action.onclick=()=>closeFeature();
+  } else if(type==="daily"){
+    title.textContent="🎁 Daily Bonus";
+    const claimed=localStorage.getItem("txp_daily_"+(tgUser.id||"demo"))===new Date().toDateString();
+    body.innerHTML=`<div style="text-align:center;padding:15px"><div style="font-size:48px">🎁</div><div class="section-title">Daily reward: 1,000 Points</div><p class="small">${claimed?"You have already claimed today's demo reward. Come back tomorrow!":"Claim your daily reward once every day."}</p></div>`;
+    action.textContent=claimed?"Already Claimed":"Claim 1,000 Points";
+    action.disabled=claimed; action.style.opacity=claimed?".5":"1";
+    action.onclick=claimDaily;
+  } else if(type==="ads"){
+    title.textContent="▶️ Watch Ads";
+    body.innerHTML='<div style="text-align:center;padding:15px"><div style="font-size:48px">📺</div><div class="section-title">Watch Ads & Earn</div><p class="small">Open the sponsored page below. Points should only be awarded after a genuine ad-completion event is verified by your backend.</p><div class="ref-box"><div class="ref-label">Sponsored link</div><div class="ref-link">asiafilm.org</div></div></div><div class="note">The link opens in a new browser tab. Simply opening a link does not prove that an ad was viewed; do not award points automatically without a valid provider callback or server-side verification.</div>';
+    action.textContent="Open Advertisement";
+    action.onclick=()=>{ window.open("https://asiafilm.org/4/641ed60690ce10b80923012fcbafa61b","_blank","noopener"); closeFeature(); };
+  }
+  document.getElementById("featureModal").style.display="flex";
+}
+function closeFeature(){
+  if(adTimer){clearInterval(adTimer);adTimer=null;}
+  document.getElementById("featureModal").style.display="none";
+}
+function startTask(i){
+  const task=taskList[i];
+  if(task.link){
+    if(tg && tg.openTelegramLink && task.link.includes("t.me/")) tg.openTelegramLink(task.link);
+    else window.open(task.link,"_blank");
+  } else {
+    shareReferral();
+  }
+  showToast("Task opened. Backend verification is required before awarding points.");
+}
+function runFeatureAction(){ closeFeature(); }
+function claimDaily(){
+  const key="txp_daily_"+(tgUser.id||"demo");
+  if(localStorage.getItem(key)===new Date().toDateString()){showToast("Daily bonus already claimed.");return;}
+  localStorage.setItem(key,new Date().toDateString());
+  points+=1000;updateBalance();
+  document.getElementById("dailyDesc").textContent="Claimed today · Come back tomorrow";
+  showToast("+1,000 demo points added!");
+  closeFeature();
+}
+function startDemoAd(){
+  if(adTimer)return;
+  adSeconds=10;
+  const action=document.getElementById("featureAction");
+  const status=document.getElementById("adStatus");
+  action.disabled=true;action.style.opacity=".55";action.textContent="Please wait...";
+  status.textContent="Demo ad in progress: "+adSeconds+" seconds remaining";
+  const progress=document.getElementById("adProgress");
+  adTimer=setInterval(()=>{
+    adSeconds--;
+    status.textContent=adSeconds>0?"Demo ad in progress: "+adSeconds+" seconds remaining":"Demo complete!";
+    progress.style.width=((10-adSeconds)*10)+"%";
+    if(adSeconds<=0){
+      clearInterval(adTimer);adTimer=null;
+      points+=100;updateBalance();
+      action.disabled=false;action.style.opacity="1";action.textContent="Reward Claimed";
+      action.onclick=()=>closeFeature();
+      status.textContent="You earned 100 demo points. Real ad rewards need ad-network verification.";
+      showToast("+100 demo points added!");
+    }
+  },1000);
+}
+
 const demoUser = {id:null, first_name:"Telegram User", last_name:"", username:"", photo_url:""};
 const tgUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : demoUser;
 const fullName = [tgUser.first_name, tgUser.last_name].filter(Boolean).join(" ") || "Telegram User";
@@ -158,7 +281,7 @@ function closeWithdraw(){document.getElementById("withdrawModal").style.display=
 function submitWithdraw(){
   const amount=Number(document.getElementById("withdrawAmount").value);
   const details=document.getElementById("paymentDetails").value.trim();
-  if(!amount||amount<=0||amount>points){showToast("Enter a valid points amount.");return;}
+  if(!amount||amount<100000||amount>points){showToast("Minimum withdrawal is $10 (100,000 Points). Check your balance.");return;}
   if(!details){showToast("Please enter your payment details.");return;}
   closeWithdraw();
   showToast("Demo only: connect a secure backend to submit requests.");
