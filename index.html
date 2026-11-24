@@ -33,8 +33,6 @@ main{padding:16px}.page{display:none}.page.active{display:block}
 .adsterra-slot{width:100%;min-height:100px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;background:#101a31;border:1px dashed #8b5cf6;border-radius:12px;color:#aebbd5;text-align:center;padding:8px;margin:10px auto}
 .adsterra-slot .ad-placeholder{font-size:12px;line-height:1.5;max-width:100%;overflow-wrap:anywhere}
 .adsterra-top-slot{max-width:520px;margin:10px auto;padding:8px 12px}
-.bottom-ad-wrap{position:fixed;z-index:9;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);padding:4px 8px calc(4px + env(safe-area-inset-bottom));background:#080f20f5;border-top:1px solid #34405e}
-.bottom-ad-wrap .adsterra-slot{margin:0;min-height:96px}
 
 </style>
 </head>
@@ -49,17 +47,18 @@ main{padding:16px}.page{display:none}.page.active{display:block}
     <div class="online">● Online</div>
   </div>
 </header>
-<!-- =========================================================
-     ADSTERRA BANNER SLOT 1: BELOW TELEGRAM USERNAME / USER ID
-     Paste your Adsterra banner code inside this container.
-     ========================================================= -->
-<div class="adsterra-slot adsterra-top-slot" id="adsterra-top-banner">
-  <div class="ad-placeholder">
-    <strong>ADSTERRA BANNER AD 1</strong><br>
-    PASTE YOUR ADSTERRA BANNER CODE HERE
-  </div>
-</div>
 <main>
+  <!-- =========================================================
+       ADSTERRA BANNER SLOT 1: AT TOP OF PAGE CONTENT
+       This ad is in normal page flow and scrolls with the page.
+       Paste your Adsterra banner code inside this container.
+       ========================================================= -->
+  <div class="adsterra-slot adsterra-top-slot" id="adsterra-top-banner">
+    <div class="ad-placeholder">
+      <strong>ADSTERRA BANNER AD 1</strong><br>
+      PASTE YOUR ADSTERRA BANNER CODE HERE
+    </div>
+  </div>
 <section class="page active" id="earn">
   <div class="hero"><div class="crown">👑</div><div class="logo">TaskX<span>Points</span></div><div class="tagline">Earn · Complete Tasks · Withdraw</div></div>
   <div class="balance"><div class="small">Your Balance</div><div class="balance-line"><div class="coin">🪙</div><div class="amount" id="balance">12,750 <small>Points</small></div></div><div class="usd" id="usdBalance">≈ $1.27</div></div>
@@ -121,6 +120,17 @@ main{padding:16px}.page{display:none}.page.active{display:block}
   <button class="primary-btn withdraw-btn" onclick="openWithdraw()">➤ &nbsp; Withdraw Now</button>
   <div class="note">Minimum withdrawal: $10.00 USD (100,000 Points at the displayed demo rate). Real exchange rates, eligibility and payment verification must be confirmed securely by your bot backend.</div>
 </section>
+  <!-- =========================================================
+       ADSTERRA BANNER SLOT 2: ABOVE BOTTOM NAVIGATION
+       This ad is in normal page flow and scrolls with the page.
+       Paste your Adsterra banner code inside this container.
+       ========================================================= -->
+  <div class="adsterra-slot" id="adsterra-bottom-banner">
+    <div class="ad-placeholder">
+      <strong>ADSTERRA BANNER AD 2</strong><br>
+      PASTE YOUR ADSTERRA BANNER CODE HERE
+    </div>
+  </div>
 </main>
 <nav class="bottom" style="grid-template-columns:repeat(5,1fr)">
   <button class="nav active" data-page="earn" onclick="go('earn',this)"><span class="ico">⌂</span>Earn</button>
@@ -129,18 +139,6 @@ main{padding:16px}.page{display:none}.page.active{display:block}
   <button class="nav" data-page="referral" onclick="go('referral',this)"><span class="ico">👥</span>Referral</button>
   <button class="nav" data-page="withdraw" onclick="go('withdraw',this)"><span class="ico">👛</span>Withdraw</button>
 </nav>
-<!-- =========================================================
-     ADSTERRA BANNER SLOT 2: BELOW BOTTOM NAVIGATION TABS
-     Paste your Adsterra banner code inside this container.
-     ========================================================= -->
-<div class="bottom-ad-wrap">
-  <div class="adsterra-slot" id="adsterra-bottom-banner">
-    <div class="ad-placeholder">
-      <strong>ADSTERRA BANNER AD 2</strong><br>
-      PASTE YOUR ADSTERRA BANNER CODE HERE
-    </div>
-  </div>
-</div>
 <div class="toast" id="toast"></div>
 
 <div class="modal-bg" id="featureModal">
