@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>TaskXPoints Bot</title>
+<title>EarnXPoints Bot</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 :root{--bg:#070d1c;--panel:#111b35;--panel2:#172442;--purple:#792cff;--blue:#167cff;--green:#00d77b;--gold:#ffd43b;--muted:#9eabc6;--line:#29385d}
@@ -39,8 +39,8 @@ main{padding:16px}.page{display:none}.page.active{display:block}
 <body>
 <div class="app">
 <header class="topbar">
-  <div class="brand">TaskXPoints_bot</div>
-  <div class="subbrand">@TaskXPoints_bot · Earn · Complete Tasks · Withdraw</div>
+  <div class="brand">EarnXPoints_bot</div>
+  <div class="subbrand">@EarnXPoints_bot · Earn · Complete Tasks · Withdraw</div>
   <div class="profile">
     <div class="avatar" id="avatar">👤</div>
     <div class="user-meta"><div class="user-name" id="userName">Telegram User</div><div class="user-id" id="userId">User ID: Demo mode</div></div>
@@ -79,7 +79,7 @@ main{padding:16px}.page{display:none}.page.active{display:block}
     </div>
   </div>
 <section class="page active" id="earn">
-  <div class="hero"><div class="crown">👑</div><div class="logo">TaskX<span>Points</span></div><div class="tagline">Earn · Complete Tasks · Withdraw</div></div>
+  <div class="hero"><div class="crown">👑</div><div class="logo">EarnX<span>Points</span></div><div class="tagline">Earn · Complete Tasks · Withdraw</div></div>
   <div class="balance"><div class="small">Your Balance</div><div class="balance-line"><div class="coin">🪙</div><div class="amount" id="balance">12,750 <small>Points</small></div></div><div class="usd" id="usdBalance">≈ $1.27</div></div>
   <div class="tap-area"><button class="tap-coin" id="tapBtn" aria-label="Tap to earn">★</button><div class="tap-title">Tap to Earn</div><div class="energy"><div class="energy-fill" id="energyFill"></div></div><div class="energy-label"><span id="energyText">100 / 100</span> Energy</div><div class="reward">+10 Points per Tap</div></div>
 </section>
@@ -116,7 +116,7 @@ main{padding:16px}.page{display:none}.page.active{display:block}
 </section>
 <section class="page" id="referral">
   <div class="ref-hero"><div class="ref-icon">👥</div><h2>Refer &amp; Earn</h2><p>Invite your friends and get<br><span class="green">2,000 Points</span> per referral!</p></div>
-  <div class="ref-box"><div class="ref-label">Your Referral Link</div><div class="ref-link" id="refLink">https://t.me/TaskXPoints_bot?start=demo</div></div>
+  <div class="ref-box"><div class="ref-label">Your Referral Link</div><div class="ref-link" id="refLink">https://t.me/EarnXPoints_bot</div></div>
   <button class="primary-btn" onclick="shareReferral()">➤ &nbsp; Share Referral Link</button>
   <div class="stats"><div class="stat">👥<div class="small">Total Referrals</div><strong id="refCount">0</strong></div><div class="stat">🪙<div class="small">Referral Earnings</div><strong id="refEarn">0 Pts</strong></div></div>
   <div class="how"><h3>How it Works?</h3><div class="step"><b>1</b> Share your referral link.</div><div class="step"><b>2</b> Your friend starts the bot.</div><div class="step"><b>3</b> Referral rewards are credited after server verification.</div></div>
@@ -198,9 +198,9 @@ let activeTaskIndex = -1;
 let adTimer = null;
 let adSeconds = 10;
 const taskList = [
-  {title:"Join our Telegram channel",desc:"Open the channel and join it.",reward:500,link:"https://t.me/TaskXPoints_bot"},
+  {title:"Join our Telegram channel",desc:"Open the channel and join it.",reward:500,link:"https://t.me/EarnXPoints_bot"},
   {title:"Share the bot with a friend",desc:"Share your personal referral link.",reward:300,link:""},
-  {title:"Visit our community",desc:"Open the community link.",reward:250,link:"https://t.me/TaskXPoints_bot"}
+  {title:"Visit our community",desc:"Open the community link.",reward:250,link:"https://t.me/EarnXPoints_bot"}
 ];
 function openFeature(type){
   activeFeature=type;
@@ -322,12 +322,12 @@ const members=[
 ["Kasun D.","102345678",127300],["Umesh R.","102456789",125600],["Hasitha W.","102567890",124250],["Gayan P.","102678901",122900],["Thilina J.","102789012",120500]
 ];
 document.getElementById("leaderRows").innerHTML=members.map((m,i)=>`<div class="leader-row"><div class="rank">${i+1}</div><div class="member"><div class="mini-avatar">${m[0][0]}</div><div class="member-name">${m[0]}<span class="member-id">ID: ${m[1]}</span></div></div><div class="points">${format(m[2])} Pts</div></div>`).join("");
-const referralLink="https://t.me/TaskXPoints_bot?start="+(tgUser.id||"demo");
+const referralLink="https://t.me/EarnXPoints_bot?start="+(tgUser.id||"demo");
 document.getElementById("refLink").textContent=referralLink;
 function shareReferral(){
-  const text="Join TaskXPoints and earn rewards! "+referralLink;
-  if(tg && tg.openTelegramLink) tg.openTelegramLink("https://t.me/share/url?url="+encodeURIComponent(referralLink)+"&text="+encodeURIComponent("Join TaskXPoints and earn rewards!"));
-  else if(navigator.share) navigator.share({title:"TaskXPoints",text,url:referralLink}).catch(()=>{});
+  const text="Join EarnXPoints and earn rewards! "+referralLink;
+  if(tg && tg.openTelegramLink) tg.openTelegramLink("https://t.me/share/url?url="+encodeURIComponent(referralLink)+"&text="+encodeURIComponent("Join EarnXPoints and earn rewards!"));
+  else if(navigator.share) navigator.share({title:"EarnXPoints",text,url:referralLink}).catch(()=>{});
   else if(navigator.clipboard) navigator.clipboard.writeText(text).then(()=>showToast("Referral link copied!"));
   else showToast("Referral link: "+referralLink);
 }
