@@ -1,1193 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LuckyTap - Tap to Earn</title>
-    <!-- Telegram WebApp SDK -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                    },
-                    colors: {
-                        neon: {
-                            green: '#a78bfa',
-                            cyan: '#fbbf24',
-                            purple: '#6d28d9',
-                            pink: '#fb7185',
-                            gold: '#fbbf24',
-                        },
-                        dark: {
-                            bg: '#090817',
-                            card: 'rgba(20, 17, 39, 0.82)',
-                            border: 'rgba(196, 181, 253, 0.13)'
-                        }
-                    },
-                    boxShadow: {
-                        'neon-green': '0 0 15px rgba(167, 139, 250, 0.30)',
-                        'neon-cyan': '0 0 15px rgba(251, 191, 36, 0.30)',
-                        'glow': '0 0 25px rgba(167, 139, 250, 0.14)',
-                    }
-                }
-            }
-        }
-    </script>
-
-    <style>
-        body {
-            background-color: #090817;
-            background-image: 
-                radial-gradient(circle at 10% 10%, rgba(167, 139, 250, 0.08) 0%, transparent 35%),
-                radial-gradient(circle at 90% 90%, rgba(251, 191, 36, 0.06) 0%, transparent 35%);
-            background-attachment: fixed;
-            color: #f3f4f6;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-        }
-
-        .glass-card {
-            background: rgba(20, 17, 39, 0.82);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(196, 181, 253, 0.13);
-        }
-
-        .neon-text-green { text-shadow: 0 0 8px rgba(0, 255, 136, 0.5); }
-        .neon-text-cyan { text-shadow: 0 0 8px rgba(0, 229, 255, 0.5); }
-
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    </style>
-
-    <style id="luckytap-reference-theme">
-      :root{color-scheme:dark}
-      body{background:#080714!important;background-image:radial-gradient(ellipse at 50% 8%,rgba(35,87,173,.18),transparent 38%),linear-gradient(180deg,#090817,#10091b 72%,#07111d)!important;color:#f7f4ff!important;padding-bottom:env(safe-area-inset-bottom)}
-      header{background:#100d1c!important;border-color:#243c67!important}
-      .glass-card{background:linear-gradient(145deg,rgba(30,21,43,.97),rgba(17,14,29,.98))!important;border:1px solid rgba(76,139,230,.42)!important;box-shadow:0 8px 24px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.025)!important;backdrop-filter:blur(14px)}
-      main{max-width:470px!important;padding-top:12px!important}
-      #adsterra-banner-top,#adsterra-banner-bottom{display:none!important}
-      #tab-earn{gap:14px!important}
-      #tab-earn>.glass-card:first-child{border:0!important;background:transparent!important;box-shadow:none!important;text-align:center;padding:8px 8px 14px!important}
-      #tab-earn>.glass-card:first-child>div:first-child{justify-content:center!important}
-      #tab-earn>.glass-card:first-child>div:first-child>span:first-child{display:none}
-      #tab-earn>.glass-card:first-child>div:first-child>span:last-child{font-size:9px!important;background:#211a30!important;color:#f8cf67!important;border-color:#72532b!important}
-      #tab-earn>.glass-card:first-child>div:nth-child(2){justify-content:center!important;flex-direction:column!important;align-items:center!important;gap:2px!important;margin:4px 0 0!important}
-      #tab-earn>.glass-card:first-child>div:nth-child(2)>div:first-child{flex-direction:column!important;gap:0!important}
-      #tab-earn>.glass-card:first-child>div:nth-child(2) i{font-size:76px!important;color:#ffc84d!important;filter:drop-shadow(0 0 12px rgba(255,180,35,.8));margin-bottom:10px}
-      #tab-earn>.glass-card:first-child #main-points{font-size:28px!important;color:#fff!important}
-      #tab-earn>.glass-card:first-child>div:nth-child(2)>div:last-child{text-align:center!important}
-      #tab-earn>.glass-card:first-child #main-usd{font-size:14px!important;color:#f4c65c!important}
-      #tab-earn>.glass-card:first-child>div:nth-child(3){margin-top:14px!important;text-align:left!important;background:#171222!important;border-color:#34294a!important}
-      #tab-earn>.glass-card:first-child>div:nth-child(3)>div:first-child{display:none}
-      #tab-earn>.glass-card:first-child>div:nth-child(3)>div:last-child{display:none!important}
-      #tab-earn:before{content:'Earn more coins';display:block;text-align:center;font-size:20px;font-weight:800;letter-spacing:-.4px;margin-top:-6px;color:#fff}
-      #tab-earn:after{content:'Complete tasks and tap to collect rewards';display:block;text-align:center;color:#aaa3b9;font-size:11px;margin-top:-12px;margin-bottom:4px}
-      #tap-earn-button{background:linear-gradient(135deg,#ffdb69,#f3a923)!important;color:#241506!important;border:1px solid #ffe18a!important;box-shadow:0 0 24px rgba(255,184,49,.22)!important;border-radius:18px!important;min-height:58px!important}
-      #tap-earn-button:disabled{opacity:.45}
-      #tap-count{color:#ffcf56!important}
-      #tap-progress{background:linear-gradient(90deg,#2679e8,#50c5ff)!important}
-      #tab-earn .grid.grid-cols-3>div{background:#1b1428!important;border:1px solid #332544!important}
-      #tab-earn .glass-card,#tab-tasks .glass-card,#tab-leaderboard .glass-card,#tab-referral .glass-card,#tab-withdraw .glass-card{border-radius:18px!important}
-      #tab-tasks .bg-slate-900\/80,#tab-leaderboard .bg-slate-900\/60,#tab-referral .bg-slate-900\/80,#tab-withdraw .bg-slate-950\/80{background:#1b1428!important;border-color:#38294b!important}
-      #tab-tasks button,#tab-withdraw button{border-radius:11px}
-      nav{max-width:470px!important;background:rgba(12,18,33,.97)!important;border-color:#315b91!important;padding:9px 4px calc(9px + env(safe-area-inset-bottom))!important;box-shadow:0 -8px 28px rgba(0,0,0,.35)}
-      nav button{min-width:52px;padding:5px 4px;border-radius:12px}
-      nav button.text-violet-400,nav button.text-violet-300{background:#17477b!important;color:#fff!important}
-      nav button i{font-size:15px!important}
-      nav button span{font-size:9px!important}
-      #toast>div{background:#171222!important;border-color:#4b8fe6!important;color:#fff!important}
-      input,select{background:#100d1b!important;border-color:#3a2b50!important}
-    </style>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>TaskXPoints Bot</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{--bg:#070d1c;--panel:#111b35;--panel2:#172442;--purple:#792cff;--blue:#167cff;--green:#00d77b;--gold:#ffd43b;--muted:#9eabc6;--line:#29385d}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -10%,#233d75 0,#0a1227 38%,var(--bg) 75%);color:#fff;font-family:Arial,Helvetica,sans-serif;padding-bottom:92px}
+.app{max-width:520px;margin:auto;min-height:100vh}
+.topbar{position:sticky;top:0;z-index:5;background:#081123ed;border-bottom:1px solid var(--line);padding:12px 16px 10px;backdrop-filter:blur(12px)}
+.brand{font-size:18px;font-weight:800;letter-spacing:.2px}.subbrand{font-size:12px;color:#c2cbe0;margin-top:3px}
+.profile{display:flex;align-items:center;gap:10px;margin-top:12px;padding:9px 11px;background:#111d37;border:1px solid #26385f;border-radius:14px}
+.avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#227dff,#9a35ff);font-size:20px;font-weight:800;overflow:hidden;flex:none}
+.avatar img{width:100%;height:100%;object-fit:cover}.user-meta{min-width:0;flex:1}.user-name{font-weight:700;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.user-id{font-size:11px;color:#aebbd5;margin-top:4px}.online{font-size:12px;color:#29e994;white-space:nowrap}
+main{padding:16px}.page{display:none}.page.active{display:block}
+.hero{text-align:center;padding:18px 8px 12px}.crown{font-size:44px}.logo{font-size:27px;font-weight:900;margin:4px 0}.logo span{color:var(--gold)}.tagline{color:#c4cce0;font-size:12px}
+.balance{margin:12px 0;padding:16px;border:1px solid #4e62ff;border-radius:18px;background:linear-gradient(120deg,#152c60,#16173e 70%,#29134d);box-shadow:0 8px 25px #0005}
+.small{font-size:12px;color:#c5d1ee}.balance-line{display:flex;align-items:center;gap:10px;margin-top:8px}.coin{font-size:34px}.amount{font-size:27px;font-weight:900}.amount small{font-size:13px;font-weight:600}.usd{font-size:12px;color:#c3cce0;margin-left:48px;margin-top:-2px}
+.tap-area{text-align:center;padding:18px 0 14px}.tap-coin{border:0;border-radius:50%;width:178px;height:178px;color:#5c3300;font-size:82px;background:radial-gradient(circle at 35% 28%,#fff2a3,#ffcb25 38%,#e68b00 72%,#9a4b00);box-shadow:0 0 0 8px #ffc52a18,0 0 42px #ffb30077,inset 0 4px 10px #fff9;cursor:pointer;touch-action:manipulation}.tap-coin:active{transform:scale(.94)}.tap-title{font-size:22px;font-weight:900;margin-top:10px}.energy{height:13px;border-radius:20px;background:#15284b;border:1px solid #3b74ff;margin:14px 12px 5px;overflow:hidden}.energy-fill{height:100%;width:100%;background:linear-gradient(90deg,#8c39ff,#05c9ff);transition:width .2s}.energy-label{font-size:12px;color:#dbe6ff}.reward{font-size:13px;color:var(--gold);margin-top:8px}
+.action{display:flex;align-items:center;gap:12px;padding:13px;margin:9px 0;border:1px solid #29395e;border-radius:15px;background:linear-gradient(110deg,#182747,#101a31);cursor:pointer}.action-icon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:23px;background:#283d78}.action-copy{flex:1}.action-title{font-weight:800;font-size:14px}.action-desc{font-size:11px;color:#aebbd5;margin-top:4px}.chev{font-size:22px;color:#dce6ff}
+.section-title{font-size:21px;font-weight:900;margin:7px 0 5px}.section-sub{font-size:12px;color:var(--muted);margin-bottom:14px}
+.trophy{text-align:center;font-size:46px;margin-top:5px}.leader-banner{text-align:center;font-size:23px;font-weight:900;color:#fff;background:linear-gradient(90deg,#7a1d22,#e34a23,#7a1d22);border:1px solid #ffb04a;border-radius:12px;padding:10px;margin:8px 0}.leaderboard{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#0d1730}.leader-head,.leader-row{display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:center;gap:7px;padding:10px 9px}.leader-head{font-size:11px;color:#b7c5e2;background:#172442;font-weight:700}.leader-row{border-top:1px solid #202e4e;font-size:12px}.rank{font-weight:900;color:#c9d5ef}.member{display:flex;align-items:center;gap:7px;min-width:0}.mini-avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#268aff,#9a36ff);display:grid;place-items:center;font-size:11px;flex:none}.member-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}.member-id{display:block;color:#8192b4;font-size:9px;margin-top:2px}.points{font-weight:800;color:#ffe34f;white-space:nowrap;font-size:11px}
+.ref-hero{text-align:center;padding:22px 0}.ref-icon{font-size:62px}.ref-hero h2{font-size:25px;margin:7px 0}.ref-hero p{color:#d0d9eb;font-size:13px;line-height:1.5}.green{color:#43f4a0;font-weight:900}
+.ref-box{padding:14px;border:1px dashed #00d78b;border-radius:15px;background:#062b2a;margin:12px 0}.ref-label{font-size:12px;color:#9ef5da}.ref-link{font-size:13px;word-break:break-all;margin-top:8px;line-height:1.5}.primary-btn{width:100%;border:0;border-radius:15px;padding:15px;background:linear-gradient(100deg,#00bd65,#00e68b);color:#fff;font-size:15px;font-weight:900;cursor:pointer;margin:8px 0}.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}.stat{padding:17px 9px;text-align:center;border:1px solid #147dff;border-radius:15px;background:#0c1d3b}.stat:nth-child(2){border-color:#00bd68;background:#082b27}.stat strong{display:block;font-size:23px;margin-top:7px}.how{padding:15px;border:1px solid #008b65;border-radius:15px;background:#062522}.how h3{margin:0 0 12px}.step{font-size:13px;margin:10px 0;color:#e6fff6}.step b{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#13bd65;margin-right:8px}
+.method{display:flex;align-items:center;gap:12px;padding:13px;margin:9px 0;border:1px solid #344363;border-radius:15px;background:linear-gradient(110deg,#1b2945,#101a30);cursor:pointer}.method.selected{border-color:#9b58ff;box-shadow:0 0 0 1px #9b58ff}.method-icon{font-size:25px;width:34px;text-align:center}.method-name{font-weight:800;flex:1;font-size:14px}.method-arrow{font-size:20px}.withdraw-btn{background:linear-gradient(100deg,#8b35ff,#5515d5);margin-top:18px}.note{font-size:11px;color:#9eabc6;line-height:1.5;margin-top:10px}
+.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:9px 8px calc(9px + env(safe-area-inset-bottom));background:#080f20f5;border:1px solid #34405e;border-bottom:0;border-radius:20px 20px 0 0;z-index:10;backdrop-filter:blur(12px)}
+.nav{border:0;background:transparent;color:#c5cde0;padding:8px 2px;border-radius:13px;font-size:11px;cursor:pointer}.nav .ico{display:block;font-size:21px;margin-bottom:4px}.nav.active{background:linear-gradient(140deg,#8b38ff,#4e1ac6);color:#fff;box-shadow:0 4px 15px #6e2cff66;font-weight:800}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#182747;border:1px solid #6479a8;border-radius:20px;padding:10px 16px;font-size:12px;display:none;z-index:20;white-space:nowrap}
+.modal-bg{display:none;position:fixed;inset:0;background:#000a;z-index:30;align-items:center;justify-content:center;padding:20px}.modal{width:100%;max-width:380px;background:#111d37;border:1px solid #52638b;border-radius:18px;padding:18px}.modal h3{margin-top:0}.modal input,.modal select{width:100%;padding:13px;border-radius:10px;border:1px solid #435477;background:#081326;color:white;margin:7px 0 12px}.modal-actions{display:flex;gap:8px}.modal-actions button{flex:1}
+</style>
 </head>
-<body class="font-sans min-h-screen flex flex-col justify-between overflow-x-hidden text-xs">
-
-    <!-- TOP HEADER -->
-    <header class="sticky top-0 z-40 glass-card border-b border-slate-800/80 px-3 py-2 flex items-center justify-between">
-        <div class="flex items-center gap-2 min-w-0">
-            <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-cyan-400 via-emerald-400 to-lime-300 flex items-center justify-center text-slate-950 shadow-glow shrink-0"><i class="fa-solid fa-bolt"></i></div>
-            <div class="min-w-0 mr-1">
-                <div class="font-extrabold text-[10px] text-violet-300 leading-tight">TapX LK Rewards</div>
-                <div class="flex items-center gap-1 mt-0.5">
-                    <div id="user-avatar" class="w-5 h-5 rounded-full bg-gradient-to-tr from-violet-500 to-amber-500 flex items-center justify-center font-bold text-slate-950 text-[9px]">U</div>
-                    <div class="min-w-0">
-                        <h1 id="user-name" class="font-bold text-[10px] leading-tight text-white flex items-center gap-1">User <i class="fa-solid fa-circle-check text-violet-400 text-[9px]"></i></h1>
-                        <p id="telegram-id" class="text-[8px] text-slate-400">Telegram User</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="flex items-center gap-1.5">
-            <div class="glass-card px-2.5 py-1 rounded-full flex items-center gap-1 border border-violet-500/30">
-                <i class="fa-solid fa-coins text-amber-400 text-[11px]"></i>
-                <span id="header-points" class="font-extrabold text-xs text-violet-400">0</span>
-                <span class="text-[9px] text-slate-400">($<span id="header-usd">0.00</span>)</span>
-            </div>
-        </div>
-    </header>
-
-    <!-- ========================================== -->
-    <!-- TOP ADSTERRA BANNER ADS CONTAINER          -->
-    <!-- ========================================== -->
-    <div class="w-full max-w-md mx-auto px-3 pt-2 flex justify-center">
-        <div id="adsterra-banner-top" class="w-full overflow-hidden flex items-center justify-center bg-slate-900/40 rounded-xl border border-slate-800/80 p-1">
-            <!-- 
-              [HOW TO ADD ADSTERRA TOP BANNER]:
-              Adsterra එකෙන් ඔයාගේ 320x50 Banner එකේ JavaScript Code එක Copy කරලා 
-              පහළින් ඇති අදහස් (Comments) වෙනුවට කෙලින්ම Paste කරන්න.
-            -->
-            <script type="text/javascript">
-                // atOptions = { ... your code here ... };
-            </script>
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-        </div>
-    </div>
-
-    <!-- MAIN APP BODY CONTAINER -->
-    <main class="flex-1 px-3 py-2 pb-20 max-w-md mx-auto w-full space-y-2.5">
-
-        <!-- TAB 1: EARN & DASHBOARD -->
-        <section id="tab-earn" class="space-y-2.5">
-            
-            <!-- Compact Points & USD Card -->
-            <div class="glass-card p-3 rounded-2xl relative overflow-hidden border border-violet-500/20 shadow-glow">
-                <div class="flex justify-between items-center mb-1">
-                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Earnings</span>
-                    <span class="text-[9px] bg-violet-500/10 text-violet-400 font-extrabold px-2 py-0.5 rounded-full border border-violet-500/30">
-                        1,000 PTS = $1.00 USD
-                    </span>
-                </div>
-
-                <div class="flex items-baseline justify-between my-0.5">
-                    <div class="flex items-center gap-1.5">
-                        <i class="fa-solid fa-coins text-amber-400 text-xl"></i>
-                        <span id="main-points" class="text-2xl font-black text-white neon-text-green">0</span>
-                        <span class="text-[10px] font-bold text-violet-400">PTS</span>
-                    </div>
-                    <div class="text-right">
-                        <span id="main-usd" class="text-xl font-black text-amber-400">$0.00</span>
-                        <span class="text-[10px] text-slate-400 block">USD Value</span>
-                    </div>
-                </div>
-
-                <!-- Daily Ad Progress Bar -->
-                <div class="bg-slate-950/80 p-2 rounded-xl border border-slate-800/80 mt-2 space-y-1">
-                    <div class="flex justify-between text-[10px] font-semibold">
-                        <span class="text-slate-400">Daily Tap & Earn Progress</span>
-                        <span id="ad-counter-text" class="text-violet-400 font-bold">0 / 100</span>
-                    </div>
-                    <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
-                        <div id="ad-progress-bar" class="bg-gradient-to-r from-violet-400 to-amber-400 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
-                    </div>
-                    <div id="timer-container" class="hidden flex items-center justify-center gap-1 text-[9px] text-amber-400 font-medium pt-0.5">
-                        <i class="fa-regular fa-clock"></i>
-                        <span>Resets in: <strong id="reset-timer" class="font-bold">23:59:59</strong></span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Advanced earnings overview -->
-            <div class="grid grid-cols-3 gap-2">
-                <div class="glass-card rounded-xl p-2 border border-slate-800">
-                    <i class="fa-solid fa-chart-line text-amber-400 text-sm"></i>
-                    <p class="text-[9px] text-slate-400 mt-1">Activities</p>
-                    <p id="stat-activities" class="text-sm font-extrabold text-white">0</p>
-                </div>
-                <div class="glass-card rounded-xl p-2 border border-slate-800">
-                    <i class="fa-solid fa-bullseye text-amber-400 text-sm"></i>
-                    <p class="text-[9px] text-slate-400 mt-1">Daily Goal</p>
-                    <p id="stat-goal" class="text-sm font-extrabold text-white">0 / 3</p>
-                </div>
-                <div class="glass-card rounded-xl p-2 border border-slate-800">
-                    <i class="fa-solid fa-medal text-violet-400 text-sm"></i>
-                    <p class="text-[9px] text-slate-400 mt-1">Achievements</p>
-                    <p id="stat-achievements" class="text-sm font-extrabold text-white">0 / 4</p>
-                </div>
-            </div>
-
-            <div class="glass-card p-3 rounded-2xl border border-amber-500/20 space-y-2">
-                <div class="flex items-center justify-between">
-                    <h2 class="font-bold text-xs text-slate-200"><i class="fa-solid fa-bullseye text-amber-400 mr-1"></i> Daily Rewards</h2>
-                    <span class="text-[9px] text-slate-400">Progress saves locally</span>
-                </div>
-                <div class="space-y-2">
-                    <div>
-                        <div class="flex justify-between text-[10px] mb-1"><span class="text-slate-300">Tap 30 times</span><span id="mission-ads-label" class="text-amber-300">0 / 3</span></div>
-                        <div class="h-1.5 rounded-full bg-slate-800 overflow-hidden"><div id="mission-ads-bar" class="h-full bg-gradient-to-r from-cyan-400 to-emerald-400" style="width:0%"></div></div>
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-[10px] mb-1"><span class="text-slate-300">Complete 2 missions</span><span id="mission-tasks-label" class="text-amber-300">0 / 2</span></div>
-                        <div class="h-1.5 rounded-full bg-slate-800 overflow-hidden"><div id="mission-tasks-bar" class="h-full bg-gradient-to-r from-cyan-400 to-emerald-400" style="width:0%"></div></div>
-                    </div>
-                </div>
-                <p class="text-[9px] text-slate-500">Mission progress tracks your daily earnings workflow.</p>
-            </div>
-
-            <div class="glass-card p-3 rounded-2xl border border-slate-800 space-y-2">
-                <div class="flex items-center justify-between">
-                    <h2 class="font-bold text-xs text-slate-200"><i class="fa-solid fa-medal text-amber-400 mr-1"></i> Achievements</h2>
-                    <span class="text-[9px] text-slate-400">Unlock as you use the app</span>
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div id="achievement-first" class="rounded-xl border border-slate-800 bg-slate-900/70 p-2"><p class="text-[10px] font-bold text-slate-200">🚀 First Steps</p><p class="text-[9px] text-slate-500">Earn your first points</p></div>
-                    <div id="achievement-ads" class="rounded-xl border border-slate-800 bg-slate-900/70 p-2"><p class="text-[10px] font-bold text-slate-200">📺 Ad Explorer</p><p class="text-[9px] text-slate-500">Complete 5 ad sessions</p></div>
-                    <div id="achievement-tasks" class="rounded-xl border border-slate-800 bg-slate-900/70 p-2"><p class="text-[10px] font-bold text-slate-200">✅ Task Finisher</p><p class="text-[9px] text-slate-500">Complete 3 tasks</p></div>
-                    <div id="achievement-streak" class="rounded-xl border border-slate-800 bg-slate-900/70 p-2"><p class="text-[10px] font-bold text-slate-200">🔥 Consistent</p><p class="text-[9px] text-slate-500">Reach day 7 streak</p></div>
-                </div>
-            </div>
-
-            <!-- Daily Login Streak -->
-            <div class="glass-card p-3 rounded-2xl border border-slate-800 space-y-1.5">
-                <div class="flex justify-between items-center">
-                    <h2 class="font-bold text-xs text-slate-200 flex items-center gap-1.5">
-                        <i class="fa-solid fa-fire text-amber-400"></i> Daily Streak Bonus
-                    </h2>
-                    <span id="streak-count-tag" class="text-[9px] text-amber-400 bg-amber-500/10 font-bold px-2 py-0.5 rounded-full">Day 1</span>
-                </div>
-                <div class="grid grid-cols-7 gap-1 pt-1">
-                    <div id="streak-d1" class="bg-slate-900 border border-slate-800 p-1 rounded-xl text-center">
-                        <p class="text-[8px] text-slate-400">D1</p>
-                        <p class="text-[9px] font-bold text-violet-400">+50</p>
-                    </div>
-                    <div id="streak-d2" class="bg-slate-900 border border-slate-800 p-1 rounded-xl text-center">
-                        <p class="text-[8px] text-slate-400">D2</p>
-                        <p class="text-[9px] font-bold text-violet-400">+100</p>
-                    </div>
-                    <div id="streak-d3" class="bg-slate-900 border border-slate-800 p-1 rounded-xl text-center">
-                        <p class="text-[8px] text-slate-400">D3</p>
-                        <p class="text-[9px] font-bold text-violet-400">+150</p>
-                    </div>
-                    <div id="streak-d4" class="bg-slate-900 border border-slate-800 p-1 rounded-xl text-center">
-                        <p class="text-[8px] text-slate-400">D4</p>
-                        <p class="text-[9px] font-bold text-violet-400">+200</p>
-                    </div>
-                    <div id="streak-d5" class="bg-slate-900 border border-slate-800 p-1 rounded-xl text-center">
-                        <p class="text-[8px] text-slate-400">D5</p>
-                        <p class="text-[9px] font-bold text-violet-400">+250</p>
-                    </div>
-                    <div id="streak-d6" class="bg-slate-900 border border-slate-800 p-1 rounded-xl text-center">
-                        <p class="text-[8px] text-slate-400">D6</p>
-                        <p class="text-[9px] font-bold text-violet-400">+300</p>
-                    </div>
-                    <div id="streak-d7" class="bg-slate-900 border border-slate-800 p-1 rounded-xl text-center">
-                        <p class="text-[8px] text-slate-400">D7</p>
-                        <p class="text-[9px] font-bold text-amber-400">+500</p>
-                    </div>
-                </div>
-                <button id="btn-claim-streak" onclick="claimDailyStreak()" class="w-full py-2 rounded-xl font-bold text-xs bg-slate-800 text-slate-400 border border-slate-700 transition-all">
-                    Claim Daily Bonus
-                </button>
-            </div>
-
-            <!-- TAP TO EARN -->
-            <div class="glass-card p-4 rounded-2xl border border-violet-400/30 space-y-3 text-center">
-                <div class="flex items-center justify-between">
-                    <h2 class="font-bold text-sm text-white"><i class="fa-solid fa-hand-pointer text-violet-300 mr-1"></i> Tap to Earn</h2>
-                    <span class="text-[9px] bg-violet-500/15 text-violet-200 font-bold px-2 py-1 rounded-full border border-violet-400/30">+10 PTS / TAP</span>
-                </div>
-                <p class="text-[10px] text-slate-400">Tap the button and collect points. Your daily tap count is limited.</p>
-                <div class="rounded-2xl bg-slate-950/70 border border-violet-400/20 p-3">
-                    <p class="text-[9px] text-slate-400">TODAY'S TAPS</p>
-                    <p class="text-2xl font-black text-white"><span id="tap-count">0</span><span class="text-sm text-slate-500"> / 100</span></p>
-                    <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden mt-2">
-                        <div id="tap-progress" class="h-full bg-gradient-to-r from-violet-400 to-amber-300 rounded-full" style="width:0%"></div>
-                    </div>
-                </div>
-                <button id="tap-earn-button" onclick="tapToEarn()" class="w-full py-5 rounded-2xl font-black text-base text-slate-950 bg-gradient-to-r from-violet-300 via-purple-300 to-amber-200 shadow-lg active:scale-95 transition-transform">
-                    <i class="fa-solid fa-hand-pointer mr-2"></i> TAP & EARN +10
-                </button>
-                <p id="tap-limit-note" class="text-[9px] text-slate-500">Daily limit resets at midnight.</p>
-            </div>
-        </section>
-
-        <!-- TAB 2: TASK WALL -->
-        <section id="tab-tasks" class="hidden space-y-2">
-            <div class="glass-card p-3 rounded-2xl space-y-2">
-                <div class="flex justify-between items-center">
-                    <h2 class="font-bold text-xs text-slate-200 flex items-center gap-1.5">
-                        <i class="fa-solid fa-list-check text-amber-400"></i> Micro Tasks Wall
-                    </h2>
-                    <span class="text-[9px] text-slate-400">Instant Verification</span>
-                </div>
-
-                <!-- Task 1 -->
-                <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 flex items-center justify-between">
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-400 flex items-center justify-center border border-sky-500/20">
-                            <i class="fa-brands fa-telegram text-sm"></i>
-                        </div>
-                        <div>
-                            <p class="font-bold text-slate-200 text-xs">Follow TapX LK Updates</p>
-                            <p class="text-[9px] text-slate-400">+100 PTS Reward</p>
-                        </div>
-                    </div>
-                    <button id="btn-task-tg" onclick="completeTask('tg', 100, 'https://t.me')" class="px-2.5 py-1 rounded-lg bg-violet-500/10 text-violet-400 font-bold text-[10px] border border-violet-500/30 hover:bg-violet-500/20">
-                        Join
-                    </button>
-                </div>
-
-                <!-- Task 2 -->
-                <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 flex items-center justify-between">
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center border border-purple-500/20">
-                            <i class="fa-solid fa-globe text-sm"></i>
-                        </div>
-                        <div>
-                            <p class="font-bold text-slate-200 text-xs">Visit Daily Partner Page</p>
-                            <p class="text-[9px] text-slate-400">+150 PTS Reward</p>
-                        </div>
-                    </div>
-                    <button id="btn-task-partner" onclick="completeTask('partner', 150, 'https://google.com')" class="px-2.5 py-1 rounded-lg bg-violet-500/10 text-violet-400 font-bold text-[10px] border border-violet-500/30 hover:bg-violet-500/20">
-                        Visit
-                    </button>
-                </div>
-
-                <!-- Task 3 -->
-                <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 flex items-center justify-between">
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center border border-amber-500/20">
-                            <i class="fa-solid fa-star text-sm"></i>
-                        </div>
-                        <div>
-                            <p class="font-bold text-slate-200 text-xs">Share TapX with a Friend</p>
-                            <p class="text-[9px] text-slate-400">+250 PTS Reward</p>
-                        </div>
-                    </div>
-                    <button id="btn-task-review" onclick="completeTask('review', 180, 'https://t.me/share/url')" class="px-2.5 py-1 rounded-lg bg-violet-500/10 text-violet-400 font-bold text-[10px] border border-violet-500/30 hover:bg-violet-500/20">
-                        Rate
-                    </button>
-                </div>
-            </div>
-
-            <!-- Task & Ad Watch Audit Log History -->
-            <div class="glass-card p-3 rounded-2xl space-y-2">
-                <div class="flex justify-between items-center">
-                    <h3 class="font-bold text-xs text-slate-200 flex items-center gap-1.5">
-                        <i class="fa-solid fa-clock-rotate-left text-amber-400"></i> Completion History
-                    </h3>
-                    <span id="history-count" class="text-[9px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full">0 Entries</span>
-                    <button onclick="exportActivityHistory()" class="text-[9px] font-bold text-amber-300 border border-amber-500/30 rounded-lg px-2 py-1"><i class="fa-solid fa-download mr-1"></i>Export</button>
-                </div>
-                <div id="history-list" class="space-y-1.5 max-h-52 overflow-y-auto no-scrollbar">
-                    <div class="text-center py-4 text-slate-500 text-[10px]">No completed tasks yet.</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 3: LIVE LEADERBOARD -->
-        <section id="tab-leaderboard" class="hidden space-y-2">
-            <div class="glass-card p-3 rounded-2xl space-y-2">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h2 class="font-bold text-xs text-slate-200 flex items-center gap-1.5">
-                            <i class="fa-solid fa-trophy text-amber-400"></i> TapX LK Top Members
-                        </h2>
-                        <p class="text-[9px] text-slate-400">Top 25 community members</p>
-                    </div>
-                    <span class="flex items-center gap-1 text-[9px] bg-violet-500/10 text-violet-400 font-bold px-2 py-0.5 rounded-full border border-violet-500/30 animate-pulse">
-                        <span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span> TOP 25
-                    </span>
-                </div>
-
-                <!-- Leaderboard Table List -->
-                <div id="leaderboard-list" class="space-y-1.5">
-                    <!-- Populated dynamically via JS -->
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 4: REFERRAL / AFFILIATE -->
-        <section id="tab-referral" class="hidden space-y-2">
-            <div class="glass-card p-3 rounded-2xl space-y-2.5">
-                <div class="flex justify-between items-center">
-                    <h2 class="font-bold text-xs text-slate-200 flex items-center gap-1.5">
-                        <i class="fa-solid fa-users text-amber-400"></i> Referral Program
-                    </h2>
-                    <span class="text-[9px] bg-amber-500/10 text-amber-400 font-bold px-2 py-0.5 rounded-full border border-amber-500/30">
-                        10% Lifetime Commission
-                    </span>
-                </div>
-
-                <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 text-center space-y-1">
-                    <p class="text-[10px] text-slate-400">Invite friends & earn 10% of all their ad earnings forever!</p>
-                    <div class="flex items-center gap-1.5 pt-1">
-                        <input type="text" id="referral-link" readonly value="https://t.me/YourGPTBot?start=ref12345" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-[10px] text-slate-300 focus:outline-none">
-                        <button onclick="copyReferralLink()" class="px-3 py-1.5 bg-gradient-to-r from-violet-400 to-amber-500 text-slate-950 font-bold text-[10px] rounded-lg shrink-0">
-                            Copy
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Invite Stats -->
-                <div class="grid grid-cols-2 gap-2">
-                    <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-800 text-center">
-                        <p class="text-[9px] text-slate-400">Invited Friends</p>
-                        <p id="ref-count" class="text-sm font-extrabold text-amber-400">0</p>
-                    </div>
-                    <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-800 text-center">
-                        <p class="text-[9px] text-slate-400">Commission Earned</p>
-                        <p id="ref-earned" class="text-sm font-extrabold text-violet-400">0 PTS</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 5: WITHDRAW SYSTEM -->
-        <section id="tab-withdraw" class="hidden space-y-2">
-            <div class="glass-card p-3 rounded-2xl space-y-2.5">
-                <div class="flex justify-between items-center">
-                    <h2 class="font-bold text-xs text-slate-200 flex items-center gap-1.5">
-                        <i class="fa-solid fa-wallet text-violet-400"></i> Instant Withdraw
-                    </h2>
-                    <span class="text-[9px] bg-violet-500/10 text-violet-400 font-bold px-2 py-0.5 rounded-full border border-violet-500/30">
-                        Min. $5.00 (5,000 PTS)
-                    </span>
-                </div>
-
-                <!-- Balance Summary -->
-                <div class="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
-                    <div>
-                        <p class="text-[9px] text-slate-400">Available Balance:</p>
-                        <p class="text-xs font-black text-violet-400"><span id="withdraw-points">0</span> PTS</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-[9px] text-slate-400">USD Value:</p>
-                        <p class="text-xs font-black text-amber-400">$<span id="withdraw-usd">0.00</span></p>
-                    </div>
-                </div>
-
-                <!-- Form -->
-                <div class="space-y-2">
-                    <div>
-                        <label class="block text-[10px] text-slate-300 font-medium mb-1">Payment Method</label>
-                        <select id="withdraw-method" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-violet-500">
-                            <option value="USDT TRC-20">USDT (TRC-20)</option>
-                            <option value="Bitcoin BTC">Bitcoin (BTC)</option>
-                            <option value="Telegram Stars">Telegram Stars</option>
-                            <option value="TON Network">TON Crypto</option>
-                            <option value="Binance Pay ID">Binance Pay ID</option>
-                            <option value="Payeer">Payeer USD</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] text-slate-300 font-medium mb-1">Amount in USD (Min $5.00)</label>
-                        <input type="number" id="withdraw-amount" placeholder="5.00" min="5" step="0.5" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-violet-500">
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] text-slate-300 font-medium mb-1">Wallet Address / ID</label>
-                        <input type="text" id="withdraw-address" placeholder="Enter payout address..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-violet-500">
-                    </div>
-
-                    <button onclick="submitWithdrawal()" class="w-full py-2.5 px-3 rounded-xl font-bold text-xs bg-gradient-to-r from-violet-400 to-amber-500 text-slate-950 shadow-glow hover:brightness-110 active:scale-95 transition-all">
-                        Submit Withdrawal Request
-                    </button>
-                </div>
-            </div>
-
-            <!-- Withdraw Request Log -->
-            <div class="glass-card p-3 rounded-2xl space-y-2">
-                <h3 class="font-bold text-xs text-slate-300 flex items-center gap-1.5">
-                    <i class="fa-solid fa-list-check text-amber-400"></i> Transaction Audit Log
-                </h3>
-                <div id="withdraw-history-list" class="space-y-1.5 max-h-44 overflow-y-auto no-scrollbar">
-                    <div class="text-center py-4 text-slate-500 text-[10px]">No payout requests yet.</div>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- ========================================== -->
-    <!-- BOTTOM ADSTERRA BANNER ADS CONTAINER       -->
-    <!-- ========================================== -->
-    <div class="w-full max-w-md mx-auto px-3 pb-16 flex justify-center">
-        <div id="adsterra-banner-bottom" class="w-full overflow-hidden flex items-center justify-center bg-slate-900/40 rounded-xl border border-slate-800/80 p-1">
-            <!-- 
-              [HOW TO ADD ADSTERRA BOTTOM BANNER]:
-              Adsterra එකෙන් ඔයාගේ Native Banner හෝ 320x50 Banner එකේ JavaScript Code එක Copy කරලා 
-              පහළින් ඇති අදහස් වෙනුවට කෙලින්ම Paste කරන්න.
-            -->
-            <script type="text/javascript">
-                // atOptions = { ... your code here ... };
-            </script>
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-         
-        
-            
-            
-            
-            
-            
-         
-            
-            
-            
-            
-           
-        
-        
-    </div>
-
-    <!-- BOTTOM NAVIGATION BAR -->
-    <nav class="fixed bottom-0 left-0 right-0 z-40 glass-card border-t border-slate-800/80 px-2 py-1.5 max-w-md mx-auto">
-        <div class="flex justify-around items-center">
-            <button onclick="switchTab('earn')" id="nav-earn" class="flex flex-col items-center gap-0.5 text-violet-400 transition-colors">
-                <i class="fa-solid fa-sack-dollar text-sm"></i>
-                <span class="text-[9px] font-bold">Earn</span>
-            </button>
-            <button onclick="switchTab('tasks')" id="nav-tasks" class="flex flex-col items-center gap-0.5 text-slate-400 transition-colors">
-                <i class="fa-solid fa-list-check text-sm"></i>
-                <span class="text-[9px] font-bold">Task</span>
-            </button>
-            <button onclick="switchTab('leaderboard')" id="nav-leaderboard" class="flex flex-col items-center gap-0.5 text-slate-400 transition-colors">
-                <i class="fa-solid fa-trophy text-sm"></i>
-                <span class="text-[9px] font-bold">Top</span>
-            </button>
-            <button onclick="switchTab('referral')" id="nav-referral" class="flex flex-col items-center gap-0.5 text-slate-400 transition-colors">
-                <i class="fa-solid fa-users text-sm"></i>
-                <span class="text-[9px] font-bold">Referral</span>
-            </button>
-            <button onclick="switchTab('withdraw')" id="nav-withdraw" class="flex flex-col items-center gap-0.5 text-slate-400 transition-colors">
-                <i class="fa-solid fa-wallet text-sm"></i>
-                <span class="text-[9px] font-bold">Withdraw</span>
-            </button>
-        </div>
-    </nav>
-
-    <!-- TOAST NOTIFICATION -->
-    <div id="toast" class="fixed top-12 left-1/2 -translate-x-1/2 z-50 transform -translate-y-10 opacity-0 transition-all duration-300 pointer-events-none">
-        <div class="glass-card px-3 py-1.5 rounded-full border border-violet-500/40 bg-slate-900/90 shadow-glow flex items-center gap-1.5 text-[10px] font-bold text-violet-300">
-            <i class="fa-solid fa-circle-check text-violet-400"></i>
-            <span id="toast-message">Operation Completed!</span>
-        </div>
-    </div>
-
-    <!-- LOGIC SCRIPT -->
-    <script>
-        // Telegram WebApp Initialization
-        const tg = window.Telegram?.WebApp;
-        if (tg) {
-            tg.ready();
-            tg.expand();
-            if (tg.setHeaderColor) tg.setHeaderColor('#090817');
-            if (tg.setBackgroundColor) tg.setBackgroundColor('#090817');
-        }
-
-        // Configuration
-        const MAX_DAILY_ADS = 100;
-        const POINTS_PER_AD = 10;
-        const RESET_CYCLE_MS = 24 * 60 * 60 * 1000;
-        const ADSTERRA_DIRECT_LINK = "https://www.google.com"; // මෙතනට ඔයාගේ Adsterra Direct Link URL එක දාන්න
-
-        // App State
-        let state = {
-            points: 0,
-            adsWatchedToday: 0,
-            lastResetTimestamp: Date.now(),
-            streakDay: 1,
-            lastStreakClaimDate: null,
-            completedTasks: [],
-            watchHistory: [],
-            withdrawHistory: [],
-            referralsCount: 0,
-            referralsEarned: 0,
-            totalAdsCompleted: 0,
-            tapCountToday: 0,
-            tapDate: new Date().toDateString(),
-            createdAt: Date.now()
-        };
-
-        let isWatchingAd = false;
-        let timerInterval = null;
-
-        // Dynamic Leaderboard Simulated Websocket Data
-        let leaderboardData = [
-            { rank: 1, name: "CryptoKing_99", points: 28400, avatar: "C" },
-            { rank: 2, name: "Alex_Earns", points: 24150, avatar: "A" },
-            { rank: 3, name: "Elena_GPT", points: 19800, avatar: "E" },
-            { rank: 4, name: "Satoshi_N", points: 15400, avatar: "S" },
-            { rank: 5, name: "TelegramPro", points: 12100, avatar: "T" },
-            { rank: 6, name: "Nimal_Pro", points: 10850, avatar: "N" },
-            { rank: 7, name: "LankaEarner", points: 9970, avatar: "L" },
-            { rank: 8, name: "PixelMaster", points: 9210, avatar: "P" },
-            { rank: 9, name: "KasunTech", points: 8640, avatar: "K" },
-            { rank: 10, name: "LuckyLion", points: 7980, avatar: "L" },
-            { rank: 11, name: "EarnWithMe", points: 7420, avatar: "E" },
-            { rank: 12, name: "NovaStar", points: 6980, avatar: "N" },
-            { rank: 13, name: "Dinu_Online", points: 6530, avatar: "D" },
-            { rank: 14, name: "TechWizard", points: 6120, avatar: "T" },
-            { rank: 15, name: "SkyRunner", points: 5740, avatar: "S" },
-            { rank: 16, name: "MayaRewards", points: 5380, avatar: "M" },
-            { rank: 17, name: "ZenithLK", points: 5010, avatar: "Z" },
-            { rank: 18, name: "AquaByte", points: 4670, avatar: "A" },
-            { rank: 19, name: "QuickQuest", points: 4320, avatar: "Q" },
-            { rank: 20, name: "Sunrise_77", points: 4010, avatar: "S" },
-            { rank: 21, name: "LankaStar", points: 3720, avatar: "L" },
-            { rank: 22, name: "BlueFalcon", points: 3440, avatar: "B" },
-            { rank: 23, name: "PixelLass", points: 3170, avatar: "P" },
-            { rank: 24, name: "HappyMiner", points: 2890, avatar: "H" },
-            { rank: 25, name: "RewardSeeker", points: 2540, avatar: "R" }
-        ];
-
-        window.onload = function () {
-            initTelegramUser();
-            loadState();
-            check24HourReset();
-            checkTapDailyReset();
-            updateUI();
-            renderWatchHistory();
-            renderWithdrawHistory();
-            renderLeaderboard();
-            startResetClock();
-            startLiveLeaderboardSimulation();
-        };
-
-        function initTelegramUser() {
-            const user = tg?.initDataUnsafe?.user;
-            if (user) {
-                const name = [user.first_name, user.last_name].filter(Boolean).join(' ') || 'Telegram User';
-                document.getElementById('user-name').innerHTML = `${name} <i class="fa-solid fa-circle-check text-violet-400 text-[10px]"></i>`;
-                document.getElementById('telegram-id').innerText = `ID: ${user.id || 'N/A'}`;
-                document.getElementById('user-avatar').innerText = user.first_name ? user.first_name.charAt(0).toUpperCase() : 'U';
-                document.getElementById('referral-link').value = `https://t.me/YourGPTBot?start=ref${user.id || '12345'}`;
-            }
-        }
-
-        function loadState() {
-            try {
-                const saved = localStorage.getItem('tapx_lk_rewards_state') || localStorage.getItem('gpt_app_state');
-                if (saved) {
-                    state = { ...state, ...JSON.parse(saved) };
-                }
-            } catch (e) { console.error("Error loading state", e); }
-        }
-
-        function saveState() {
-            try {
-                localStorage.setItem('tapx_lk_rewards_state', JSON.stringify(state));
-            } catch (e) { console.error("Error saving state", e); }
-        }
-
-        function check24HourReset() {
-            const now = Date.now();
-            if (now - state.lastResetTimestamp >= RESET_CYCLE_MS) {
-                state.adsWatchedToday = 0;
-                state.lastResetTimestamp = now;
-                saveState();
-            }
-        }
-
-        function updateUI() {
-            const usd = (state.points / 1000).toFixed(2);
-
-            document.getElementById('header-points').innerText = state.points.toLocaleString();
-            document.getElementById('header-usd').innerText = usd;
-            document.getElementById('main-points').innerText = state.points.toLocaleString();
-            document.getElementById('main-usd').innerText = `$${usd}`;
-            document.getElementById('withdraw-points').innerText = state.points.toLocaleString();
-            document.getElementById('withdraw-usd').innerText = usd;
-            const taps = Math.min(Number(state.tapCountToday || 0), 100);
-            const tapCountEl = document.getElementById('tap-count');
-            const tapProgressEl = document.getElementById('tap-progress');
-            const tapButton = document.getElementById('tap-earn-button');
-            if (tapCountEl) tapCountEl.innerText = taps;
-            if (tapProgressEl) tapProgressEl.style.width = `${taps}%`;
-            if (tapButton) {
-                tapButton.disabled = taps >= 100;
-                tapButton.classList.toggle('opacity-50', taps >= 100);
-                tapButton.innerHTML = taps >= 100
-                    ? '<i class="fa-solid fa-lock mr-2"></i> DAILY LIMIT REACHED'
-                    : '<i class="fa-solid fa-hand-pointer mr-2"></i> TAP & EARN +10';
-            }
-            const tapNote = document.getElementById('tap-limit-note');
-            if (tapNote) tapNote.innerText = taps >= 100 ? 'You have used all 100 taps for today. Come back tomorrow!' : `${100 - taps} taps remaining today.`;
-
-            document.getElementById('ref-count').innerText = state.referralsCount;
-            document.getElementById('ref-earned').innerText = `${state.referralsEarned} PTS`;
-            const activityCount = state.watchHistory.length;
-            const adCount = Number(state.totalAdsCompleted || 0);
-            const taskCount = state.completedTasks.length;
-            document.getElementById('stat-activities').innerText = activityCount.toLocaleString();
-            document.getElementById('stat-goal').innerText = `${Math.min(state.adsWatchedToday, 3)} / 3`;
-            document.getElementById('mission-ads-label').innerText = `${Math.min(state.adsWatchedToday, 3)} / 3`;
-            document.getElementById('mission-ads-bar').style.width = `${Math.min(state.adsWatchedToday / 3, 1) * 100}%`;
-            document.getElementById('mission-tasks-label').innerText = `${Math.min(taskCount, 2)} / 2`;
-            document.getElementById('mission-tasks-bar').style.width = `${Math.min(taskCount / 2, 1) * 100}%`;
-            const achievements = [
-                state.points > 0,
-                adCount >= 5,
-                taskCount >= 3,
-                state.streakDay === 7 || (state.streakDay === 1 && state.lastStreakClaimDate && state.points > 0)
-            ];
-            document.getElementById('stat-achievements').innerText = `${achievements.filter(Boolean).length} / 4`;
-            ['achievement-first','achievement-ads','achievement-tasks','achievement-streak'].forEach((id, i) => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.classList.toggle('border-violet-500/50', achievements[i]);
-                    el.classList.toggle('bg-violet-500/10', achievements[i]);
-                    el.classList.toggle('opacity-50', !achievements[i]);
-                }
-            });
-
-            // Progress bar
-            const count = state.adsWatchedToday;
-            document.getElementById('ad-counter-text').innerText = `${count} / ${MAX_DAILY_ADS}`;
-            document.getElementById('ad-progress-bar').style.width = `${(count / MAX_DAILY_ADS) * 100}%`;
-
-            // Ad views switch
-            const btnWatchAd = document.getElementById('btn-watch-ad');
-            const idleView = document.getElementById('ad-idle-view');
-            const limitView = document.getElementById('ad-limit-view');
-            const timerContainer = document.getElementById('timer-container');
-
-            if (state.adsWatchedToday >= MAX_DAILY_ADS) {
-                btnWatchAd.disabled = true;
-                btnWatchAd.classList.add('opacity-50', 'cursor-not-allowed');
-                btnWatchAd.innerHTML = `<i class="fa-solid fa-lock"></i> <span>Daily Limit Reached</span>`;
-                if (!isWatchingAd) {
-                    idleView.classList.add('hidden');
-                    limitView.classList.remove('hidden');
-                }
-                timerContainer.classList.remove('hidden');
-            } else {
-                btnWatchAd.disabled = false;
-                btnWatchAd.classList.remove('opacity-50', 'cursor-not-allowed');
-                btnWatchAd.innerHTML = `<i class="fa-solid fa-up-right-from-square text-xs"></i> <span>Start Ad Session (30s)</span>`;
-                if (!isWatchingAd) {
-                    idleView.classList.remove('hidden');
-                    limitView.classList.add('hidden');
-                }
-                timerContainer.classList.add('hidden');
-            }
-
-            // Daily streak UI state
-            const todayStr = new Date().toDateString();
-            const btnStreak = document.getElementById('btn-claim-streak');
-            if (state.lastStreakClaimDate === todayStr) {
-                btnStreak.disabled = true;
-                btnStreak.innerText = "Bonus Claimed Today ✓";
-                btnStreak.className = "w-full py-2 rounded-xl font-bold text-xs bg-slate-900 text-slate-500 border border-slate-800 cursor-not-allowed";
-            } else {
-                btnStreak.disabled = false;
-                btnStreak.innerText = `Claim Day ${state.streakDay} Bonus`;
-                btnStreak.className = "w-full py-2 rounded-xl font-bold text-xs bg-gradient-to-r from-violet-400 to-amber-500 text-slate-950 shadow-glow hover:brightness-110 active:scale-95 transition-all";
-            }
-        }
-
-        function checkTapDailyReset() {
-            const today = new Date().toDateString();
-            if (state.tapDate !== today) {
-                state.tapDate = today;
-                state.tapCountToday = 0;
-                saveState();
-            }
-        }
-
-        function tapToEarn() {
-            checkTapDailyReset();
-            if (Number(state.tapCountToday || 0) >= 100) {
-                showToast("Daily tap limit reached. Come back tomorrow!");
-                return;
-            }
-            state.tapCountToday = Number(state.tapCountToday || 0) + 1;
-            state.points += 10;
-            state.watchHistory.unshift({
-                id: Date.now(),
-                title: "Tap to Earn",
-                points: 10,
-                date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            });
-            saveState();
-            triggerHaptic('success');
-            updateUI();
-            renderWatchHistory();
-            showToast("+10 PTS added!");
-        }
-
-        function claimDailyStreak() {
-            const todayStr = new Date().toDateString();
-            if (state.lastStreakClaimDate === todayStr) return;
-
-            const yesterdayStr = new Date(Date.now() - 86400000).toDateString();
-            if (state.lastStreakClaimDate && state.lastStreakClaimDate !== yesterdayStr) {
-                state.streakDay = 1;
-            }
-            const streakRewards = [50, 100, 150, 200, 250, 300, 500];
-            const reward = streakRewards[Math.max(0, Math.min(6, state.streakDay - 1))];
-
-            state.points += reward;
-            state.lastStreakClaimDate = todayStr;
-
-            state.watchHistory.unshift({
-                id: Date.now(),
-                title: `Day ${state.streakDay} Streak Bonus`,
-                points: reward,
-                date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            });
-
-            if (state.streakDay < 7) {
-                state.streakDay += 1;
-            } else {
-                state.streakDay = 1;
-            }
-
-            saveState();
-            triggerHaptic('success');
-            showToast(`+${reward} PTS Daily Streak Bonus Claimed! 🔥`);
-            updateUI();
-            renderWatchHistory();
-        }
-
-        function startAdWatcher() {
-            if (isWatchingAd || state.adsWatchedToday >= MAX_DAILY_ADS) return;
-
-            isWatchingAd = true;
-            triggerHaptic();
-
-            window.open(ADSTERRA_DIRECT_LINK, '_blank');
-
-            document.getElementById('ad-idle-view').classList.add('hidden');
-            document.getElementById('ad-limit-view').classList.add('hidden');
-            document.getElementById('ad-timer-view').classList.remove('hidden');
-            document.getElementById('ad-timer-view').classList.add('flex');
-
-            const btnWatchAd = document.getElementById('btn-watch-ad');
-            btnWatchAd.disabled = true;
-            btnWatchAd.classList.add('opacity-50');
-
-            let seconds = 30;
-            const countdownElem = document.getElementById('countdown-seconds');
-            const timerCircle = document.getElementById('timer-circle');
-            const circumference = 125.6;
-
-            countdownElem.innerText = seconds;
-            timerCircle.style.strokeDashoffset = '0';
-
-            timerInterval = setInterval(() => {
-                seconds--;
-                countdownElem.innerText = seconds;
-
-                const offset = circumference - (seconds / 30) * circumference;
-                timerCircle.style.strokeDashoffset = offset;
-
-                if (seconds <= 0) {
-                    clearInterval(timerInterval);
-                    completeAdWatcher();
-                }
-            }, 1000);
-        }
-
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden && isWatchingAd && timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-                isWatchingAd = false;
-                document.getElementById('ad-timer-view').classList.add('hidden');
-                document.getElementById('ad-timer-view').classList.remove('flex');
-                document.getElementById('ad-idle-view').classList.remove('hidden');
-                const btn = document.getElementById('btn-watch-ad');
-                btn.disabled = false;
-                btn.classList.remove('opacity-50');
-                showToast("Ad session paused when app was minimized");
-            }
-        });
-
-        function completeAdWatcher() {
-            isWatchingAd = false;
-            state.points += POINTS_PER_AD;
-            state.adsWatchedToday += 1;
-            state.totalAdsCompleted = Number(state.totalAdsCompleted || 0) + 1;
-
-            state.watchHistory.unshift({
-                id: Date.now(),
-                title: 'Tap Reward Session',
-                points: POINTS_PER_AD,
-                date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            });
-
-            saveState();
-            triggerHaptic('success');
-            showToast(`+${POINTS_PER_AD} Points Rewarded! 🎉`);
-
-            document.getElementById('ad-timer-view').classList.add('hidden');
-            document.getElementById('ad-timer-view').classList.remove('flex');
-            document.getElementById('ad-idle-view').classList.remove('hidden');
-
-            updateUI();
-            renderWatchHistory();
-        }
-
-        function completeTask(taskId, points, url) {
-            if (state.completedTasks.includes(taskId)) {
-                showToast("Task already completed!");
-                return;
-            }
-
-            if (url && url !== '#') window.open(url, '_blank');
-
-            state.completedTasks.push(taskId);
-            state.points += points;
-
-            state.watchHistory.unshift({
-                id: Date.now(),
-                title: `Micro Task Reward (${taskId.toUpperCase()})`,
-                points: points,
-                date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            });
-
-            const btn = document.getElementById(`btn-task-${taskId}`);
-            if (btn) {
-                btn.disabled = true;
-                btn.innerText = "Completed ✓";
-                btn.className = "px-2.5 py-1 rounded-lg bg-slate-800 text-slate-500 font-bold text-[10px]";
-            }
-
-            saveState();
-            triggerHaptic('success');
-            showToast(`Task Complete! +${points} PTS`);
-            updateUI();
-            renderWatchHistory();
-        }
-
-        function submitWithdrawal() {
-            const method = document.getElementById('withdraw-method').value;
-            const amountUsd = parseFloat(document.getElementById('withdraw-amount').value);
-            const address = document.getElementById('withdraw-address').value.trim();
-
-            if (!amountUsd || amountUsd < 5) {
-                showToast("Minimum withdrawal is $5.00 USD!");
-                triggerHaptic('error');
-                return;
-            }
-
-            const reqPoints = Math.round(amountUsd * 1000);
-            if (!Number.isFinite(amountUsd) || !Number.isFinite(reqPoints)) {
-                showToast("Enter a valid withdrawal amount!");
-                return;
-            }
-            if (state.points < reqPoints) {
-                showToast("Insufficient point balance!");
-                triggerHaptic('error');
-                return;
-            }
-
-            if (!address) {
-                showToast("Please enter a valid wallet address!");
-                triggerHaptic('error');
-                return;
-            }
-
-            state.points -= reqPoints;
-            state.withdrawHistory.unshift({
-                id: Date.now(),
-                method: method,
-                amountUsd: amountUsd,
-                points: reqPoints,
-                address: address,
-                status: 'Pending Verification',
-                date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-            });
-
-            saveState();
-            triggerHaptic('success');
-            showToast("Withdrawal Request Submitted!");
-
-            document.getElementById('withdraw-amount').value = '';
-            document.getElementById('withdraw-address').value = '';
-
-            updateUI();
-            renderWithdrawHistory();
-        }
-
-        function exportActivityHistory() {
-            const payload = {
-                exportedAt: new Date().toISOString(),
-                mode: "live-app",
-                points: state.points,
-                watchHistory: state.watchHistory,
-                withdrawals: state.withdrawHistory,
-                completedTasks: state.completedTasks,
-                totalAdsCompleted: Number(state.totalAdsCompleted || 0)
-            };
-            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `rewards-activity-${new Date().toISOString().slice(0,10)}.json`;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            URL.revokeObjectURL(url);
-            showToast("Activity export downloaded");
-        }
-
-        function renderWatchHistory() {
-            const list = document.getElementById('history-list');
-            document.getElementById('history-count').innerText = `${state.watchHistory.length} Entries`;
-
-            if (state.watchHistory.length === 0) {
-                list.innerHTML = `<div class="text-center py-4 text-slate-500 text-[10px]">No completed tasks yet.</div>`;
-                return;
-            }
-
-            list.innerHTML = state.watchHistory.map(item => `
-                <div class="bg-slate-900/60 p-2 rounded-xl border border-slate-800 flex items-center justify-between">
-                    <div>
-                        <p class="font-bold text-slate-200 text-[11px]">${item.title}</p>
-                        <p class="text-[9px] text-slate-400">${item.date}</p>
-                    </div>
-                    <span class="font-black text-violet-400 text-xs">+${item.points} PTS</span>
-                </div>
-            `).join('');
-        }
-
-        function renderWithdrawHistory() {
-            const list = document.getElementById('withdraw-history-list');
-            if (state.withdrawHistory.length === 0) {
-                list.innerHTML = `<div class="text-center py-4 text-slate-500 text-[10px]">No payout requests yet.</div>`;
-                return;
-            }
-
-            list.innerHTML = state.withdrawHistory.map(item => `
-                <div class="bg-slate-900/60 p-2 rounded-xl border border-slate-800 flex items-center justify-between">
-                    <div>
-                        <div class="flex items-center gap-1.5">
-                            <span class="font-bold text-slate-200 text-[11px]">${item.method}</span>
-                            <span class="px-1.5 py-0.2 rounded text-[8px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                                <i class="fa-regular fa-clock"></i> ${item.status}
-                            </span>
-                        </div>
-                        <p class="text-[9px] text-slate-400">${item.address.substring(0, 10)}... | ${item.date}</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="font-black text-amber-400 text-xs">$${item.amountUsd.toFixed(2)}</p>
-                        <p class="text-[9px] text-slate-400">${item.points} PTS</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderLeaderboard() {
-            const list = document.getElementById('leaderboard-list');
-            list.innerHTML = leaderboardData.map((user, idx) => {
-                let badge = `<span class="font-bold text-slate-400 text-xs w-4">${idx + 1}</span>`;
-                if (idx === 0) badge = `<i class="fa-solid fa-crown text-amber-400 text-xs w-4"></i>`;
-                else if (idx === 1) badge = `<i class="fa-solid fa-medal text-slate-300 text-xs w-4"></i>`;
-                else if (idx === 2) badge = `<i class="fa-solid fa-award text-amber-600 text-xs w-4"></i>`;
-
-                return `
-                    <div class="bg-slate-900/60 p-2 rounded-xl border border-slate-800 flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            ${badge}
-                            <div class="w-6 h-6 rounded-full bg-gradient-to-tr from-cyan-500 to-emerald-500 text-slate-950 font-bold text-[10px] flex items-center justify-center">
-                                ${user.avatar}
-                            </div>
-                            <span class="font-semibold text-slate-200 text-xs">${user.name}</span>
-                        </div>
-                        <span class="font-extrabold text-violet-400 text-xs">${user.points.toLocaleString()} PTS</span>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function startLiveLeaderboardSimulation() {
-            leaderboardData.sort((a, b) => b.points - a.points);
-            renderLeaderboard();
-        }
-
-        function copyReferralLink() {
-            const input = document.getElementById('referral-link');
-            input.select();
-            document.execCommand('copy');
-            triggerHaptic('success');
-            showToast("Referral link copied to clipboard!");
-        }
-
-        function startResetClock() {
-            setInterval(() => {
-                const now = Date.now();
-                const remaining = RESET_CYCLE_MS - (now - state.lastResetTimestamp);
-                if (remaining <= 0) {
-                    check24HourReset();
-                    updateUI();
-                } else {
-                    const h = Math.floor(remaining / (1000 * 60 * 60));
-                    const m = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-                    const s = Math.floor((remaining % (1000 * 60)) / 1000);
-                    document.getElementById('reset-timer').innerText = 
-                        `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-                }
-            }, 1000);
-        }
-
-        function switchTab(tabName) {
-            triggerHaptic();
-            ['earn', 'tasks', 'leaderboard', 'referral', 'withdraw'].forEach(t => {
-                document.getElementById(`tab-${t}`).classList.add('hidden');
-                document.getElementById(`nav-${t}`).className = "flex flex-col items-center gap-0.5 text-slate-400 transition-colors";
-            });
-
-            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
-            document.getElementById(`nav-${tabName}`).className = "flex flex-col items-center gap-0.5 text-violet-400 transition-colors";
-        }
-
-        function triggerHaptic(type = 'impact') {
-            if (tg?.HapticFeedback) {
-                if (type === 'success' || type === 'error') tg.HapticFeedback.notificationOccurred(type);
-                else tg.HapticFeedback.impactOccurred('medium');
-            }
-        }
-
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-message').innerText = msg;
-            toast.classList.remove('opacity-0', '-translate-y-10', 'pointer-events-none');
-            toast.classList.add('opacity-100', 'translate-y-0');
-
-            setTimeout(() => {
-                toast.classList.remove('opacity-100', 'translate-y-0');
-                toast.classList.add('opacity-0', '-translate-y-10', 'pointer-events-none');
-            }, 2200);
-        }
-    </script>
+<body>
+<div class="app">
+<header class="topbar">
+  <div class="brand">TaskXPoints_bot</div>
+  <div class="subbrand">@TaskXPoints_bot · Earn · Complete Tasks · Withdraw</div>
+  <div class="profile">
+    <div class="avatar" id="avatar">👤</div>
+    <div class="user-meta"><div class="user-name" id="userName">Telegram User</div><div class="user-id" id="userId">User ID: Demo mode</div></div>
+    <div class="online">● Online</div>
+  </div>
+</header>
+<main>
+<section class="page active" id="earn">
+  <div class="hero"><div class="crown">👑</div><div class="logo">TaskX<span>Points</span></div><div class="tagline">Earn · Complete Tasks · Withdraw</div></div>
+  <div class="balance"><div class="small">Your Balance</div><div class="balance-line"><div class="coin">🪙</div><div class="amount" id="balance">12,750 <small>Points</small></div></div><div class="usd" id="usdBalance">≈ $1.27</div></div>
+  <div class="tap-area"><button class="tap-coin" id="tapBtn" aria-label="Tap to earn">★</button><div class="tap-title">Tap to Earn</div><div class="energy"><div class="energy-fill" id="energyFill"></div></div><div class="energy-label"><span id="energyText">100 / 100</span> Energy</div><div class="reward">+10 Points per Tap</div></div>
+  <div class="action" onclick="showToast('Tasks will be loaded from your bot server.')"><div class="action-icon">📋</div><div class="action-copy"><div class="action-title">Complete Tasks</div><div class="action-desc">Earn more points</div></div><div class="chev">›</div></div>
+  <div class="action" onclick="showToast('Daily bonus needs server-side claim validation.')"><div class="action-icon">🎁</div><div class="action-copy"><div class="action-title">Daily Bonus</div><div class="action-desc">Claim your daily reward</div></div><div class="chev">›</div></div>
+  <div class="action" onclick="showToast('Ad rewards need an approved ad provider and server validation.')"><div class="action-icon">▶️</div><div class="action-copy"><div class="action-title">Watch Ads</div><div class="action-desc">Earn points by watching ads</div></div><div class="chev">›</div></div>
+</section>
+<section class="page" id="top">
+  <div class="trophy">🏆</div><div class="leader-banner">Top Members</div><div class="section-sub" style="text-align:center">Top 25 Earners · Demo leaderboard</div>
+  <div class="leaderboard"><div class="leader-head"><span>#</span><span>Member / User ID</span><span>Points</span></div><div id="leaderRows"></div></div>
+</section>
+<section class="page" id="referral">
+  <div class="ref-hero"><div class="ref-icon">👥</div><h2>Refer &amp; Earn</h2><p>Invite your friends and get<br><span class="green">2,000 Points</span> per referral!</p></div>
+  <div class="ref-box"><div class="ref-label">Your Referral Link</div><div class="ref-link" id="refLink">https://t.me/TaskXPoints_bot?start=demo</div></div>
+  <button class="primary-btn" onclick="shareReferral()">➤ &nbsp; Share Referral Link</button>
+  <div class="stats"><div class="stat">👥<div class="small">Total Referrals</div><strong id="refCount">0</strong></div><div class="stat">🪙<div class="small">Referral Earnings</div><strong id="refEarn">0 Pts</strong></div></div>
+  <div class="how"><h3>How it Works?</h3><div class="step"><b>1</b> Share your referral link.</div><div class="step"><b>2</b> Your friend starts the bot.</div><div class="step"><b>3</b> Referral rewards are credited after server verification.</div></div>
+</section>
+<section class="page" id="withdraw">
+  <div class="ref-hero"><div class="ref-icon">👛</div><h2>Withdraw Points</h2><p>Convert your points to rewards</p></div>
+  <div class="balance"><div class="small">Your Balance</div><div class="balance-line"><div class="coin">🪙</div><div class="amount" id="withdrawBalance">12,750 <small>Points</small></div></div><div class="usd" id="withdrawUsd">≈ $1.27</div></div>
+  <div class="section-title" style="font-size:16px">Select Withdraw Method</div>
+  <div id="methods">
+    <div class="method" data-method="Binance USDT" onclick="selectMethod(this)"><div class="method-icon">🟡</div><div class="method-name">Binance (USDT)</div><div class="method-arrow">›</div></div>
+    <div class="method" data-method="PayPal" onclick="selectMethod(this)"><div class="method-icon">🔵</div><div class="method-name">PayPal</div><div class="method-arrow">›</div></div>
+    <div class="method" data-method="Skrill" onclick="selectMethod(this)"><div class="method-icon">🟣</div><div class="method-name">Skrill</div><div class="method-arrow">›</div></div>
+    <div class="method" data-method="Payoneer" onclick="selectMethod(this)"><div class="method-icon">🌐</div><div class="method-name">Payoneer</div><div class="method-arrow">›</div></div>
+    <div class="method" data-method="Bank Transfer" onclick="selectMethod(this)"><div class="method-icon">🏦</div><div class="method-name">Bank Transfer</div><div class="method-arrow">›</div></div>
+  </div>
+  <button class="primary-btn withdraw-btn" onclick="openWithdraw()">➤ &nbsp; Withdraw Now</button>
+  <div class="note">Demo UI only. Real withdrawals, minimum limits, exchange rates and payment verification must be implemented securely on your bot backend.</div>
+</section>
+</main>
+<nav class="bottom">
+  <button class="nav active" data-page="earn" onclick="go('earn',this)"><span class="ico">⌂</span>Earn</button>
+  <button class="nav" data-page="top" onclick="go('top',this)"><span class="ico">🏆</span>Top</button>
+  <button class="nav" data-page="referral" onclick="go('referral',this)"><span class="ico">👥</span>Referral</button>
+  <button class="nav" data-page="withdraw" onclick="go('withdraw',this)"><span class="ico">👛</span>Withdraw</button>
+</nav>
+<div class="toast" id="toast"></div>
+<div class="modal-bg" id="withdrawModal">
+  <div class="modal"><h3>Withdraw Request</h3><div class="small" id="selectedLabel">Method: not selected</div><label class="small" for="withdrawAmount">Points to withdraw</label><input id="withdrawAmount" type="number" min="1" placeholder="Enter points"><label class="small" for="paymentDetails">Payment account / details</label><input id="paymentDetails" placeholder="Enter your payment details"><div class="modal-actions"><button class="primary-btn" style="background:#344363" onclick="closeWithdraw()">Cancel</button><button class="primary-btn withdraw-btn" onclick="submitWithdraw()">Submit</button></div></div>
+</div>
+</div>
+<script>
+const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+if (tg) { tg.ready(); tg.expand(); }
+const demoUser = {id:null, first_name:"Telegram User", last_name:"", username:"", photo_url:""};
+const tgUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : demoUser;
+const fullName = [tgUser.first_name, tgUser.last_name].filter(Boolean).join(" ") || "Telegram User";
+document.getElementById("userName").textContent = fullName + (tgUser.username ? " · @" + tgUser.username : "");
+document.getElementById("userId").textContent = "User ID: " + (tgUser.id || "Demo mode");
+if (tgUser.photo_url) document.getElementById("avatar").innerHTML = '<img src="'+tgUser.photo_url+'" alt="Profile">';
+else document.getElementById("avatar").textContent = fullName.charAt(0).toUpperCase();
+
+let points = 12750, energy = 100, selectedMethod = "";
+const format = n => Number(n).toLocaleString("en-US");
+function updateBalance(){
+  document.getElementById("balance").innerHTML = format(points)+' <small>Points</small>';
+  document.getElementById("withdrawBalance").innerHTML = format(points)+' <small>Points</small>';
+  const usd = "≈ $" + (points/10000).toFixed(2);
+  document.getElementById("usdBalance").textContent = usd;
+  document.getElementById("withdrawUsd").textContent = usd;
+}
+function updateEnergy(){
+  document.getElementById("energyText").textContent = energy+" / 100";
+  document.getElementById("energyFill").style.width = energy+"%";
+}
+document.getElementById("tapBtn").addEventListener("click",()=>{
+  if(energy<=0){showToast("No energy left. Please wait for refill.");return;}
+  energy--; points+=10; updateBalance(); updateEnergy();
+  if(tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
+});
+function go(page,btn){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById(page).classList.add("active");
+  document.querySelectorAll(".nav").forEach(n=>n.classList.remove("active"));
+  btn.classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function showToast(msg){
+  const t=document.getElementById("toast");t.textContent=msg;t.style.display="block";
+  clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.style.display="none",2600);
+}
+const members=[
+["Kavindu S.","100234667",250000],["Nimesh D.","100345678",220500],["Ravindu M.","100456789",210250],["Chamath R.","100567890",180900],["Dasun K.","100678901",175430],
+["Tharindu P.","100789012",172100],["Sandun W.","100890123",168750],["Supun M.","100901234",160320],["Isuru K.","101012345",158900],["Madushan H.","101123456",150500],
+["Dilan A.","101234567",148750],["Kasun P.","101345678",146000],["Chathura N.","101456789",144300],["Malinda R.","101567890",140950],["Raveen I.","101678901",138900],
+["Ashen G.","101789012",138250],["Dushen K.","101890123",134800],["Sahan M.","102012345",132600],["Nuwan B.","102123456",130400],["Lahiru S.","102234567",128750],
+["Kasun D.","102345678",127300],["Umesh R.","102456789",125600],["Hasitha W.","102567890",124250],["Gayan P.","102678901",122900],["Thilina J.","102789012",120500]
+];
+document.getElementById("leaderRows").innerHTML=members.map((m,i)=>`<div class="leader-row"><div class="rank">${i+1}</div><div class="member"><div class="mini-avatar">${m[0][0]}</div><div class="member-name">${m[0]}<span class="member-id">ID: ${m[1]}</span></div></div><div class="points">${format(m[2])} Pts</div></div>`).join("");
+const referralLink="https://t.me/TaskXPoints_bot?start="+(tgUser.id||"demo");
+document.getElementById("refLink").textContent=referralLink;
+function shareReferral(){
+  const text="Join TaskXPoints and earn rewards! "+referralLink;
+  if(tg && tg.openTelegramLink) tg.openTelegramLink("https://t.me/share/url?url="+encodeURIComponent(referralLink)+"&text="+encodeURIComponent("Join TaskXPoints and earn rewards!"));
+  else if(navigator.share) navigator.share({title:"TaskXPoints",text,url:referralLink}).catch(()=>{});
+  else if(navigator.clipboard) navigator.clipboard.writeText(text).then(()=>showToast("Referral link copied!"));
+  else showToast("Referral link: "+referralLink);
+}
+function selectMethod(el){
+  document.querySelectorAll(".method").forEach(m=>m.classList.remove("selected"));
+  el.classList.add("selected");selectedMethod=el.dataset.method;
+}
+function openWithdraw(){
+  if(!selectedMethod){showToast("Please select a withdrawal method.");return;}
+  document.getElementById("selectedLabel").textContent="Method: "+selectedMethod;
+  document.getElementById("withdrawModal").style.display="flex";
+}
+function closeWithdraw(){document.getElementById("withdrawModal").style.display="none";}
+function submitWithdraw(){
+  const amount=Number(document.getElementById("withdrawAmount").value);
+  const details=document.getElementById("paymentDetails").value.trim();
+  if(!amount||amount<=0||amount>points){showToast("Enter a valid points amount.");return;}
+  if(!details){showToast("Please enter your payment details.");return;}
+  closeWithdraw();
+  showToast("Demo only: connect a secure backend to submit requests.");
+}
+updateBalance();updateEnergy();
+</script>
 </body>
 </html>
